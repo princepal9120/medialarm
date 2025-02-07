@@ -57,6 +57,7 @@ const style = StyleSheet.create({
   },
   iconContainer: {
     alignItems: "center",
+    height: 100,
   },
   appName: {
     color: "white",

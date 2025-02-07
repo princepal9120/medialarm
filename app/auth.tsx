@@ -21,25 +21,30 @@ const AuthScreen = () => {
       style={styles.mainContainer}
     >
       <View style={styles.content}>
-        <View>
+        <View style={styles.iconContainer}>
           <Ionicons name="medical" size={80} color={"white"} />
         </View>
-        <Text>MediAlert</Text>
-        <Text>Your Personal Medical Alert App</Text>
-        <View>
-          <Text>Welcome Back</Text>
-          <Text>
+        <Text style={styles.title}>MediAlert</Text>
+        <Text style={styles.subtitle}>Your Personal Medical Alert App</Text>
+        <View style={styles.card}>
+          <Text style={styles.welcomeText}>Welcome Back!</Text>
+          <Text style={styles.instructionText}>
             {hasBiometrics
               ? "use faceId/touchId Or PIN to access your medications"
               : "Enter your pin to access to medications"}
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity style={[styles.button, isAuthenticated && styles.buttonDisabled]}
+           //onPress={authenticate}
+           disabled={isAuthenticated}
+          >
             <Ionicons
               name={hasBiometrics ? "finger-print-outline" : "key-outline"}
               size={40}
               color={"white"}
+              style={styles.buttonIcon}
+              
             />
-            <Text style={styles.text}>
+            <Text style={styles.buttonText} >
               {" "}
               {isAuthenticated
                 ? "Vefify..."
@@ -49,13 +54,13 @@ const AuthScreen = () => {
             </Text>
           </TouchableOpacity>
           {error && (
-            <View>
+            <View style={styles.errorContainer} >
               <Ionicons
                 name="alert-circle"
                 size={20}
                 color={"#f44336"}
               ></Ionicons>
-              <Text style={styles.text}>{error}</Text>
+              <Text style={styles.errorText}>{error}</Text>
             </View>
           )}
         </View>
@@ -72,13 +77,104 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    padding: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transparent",
   },
   text: {
     color: "white",
     fontSize: 20,
     fontWeight: "bold",
   },
+  iconContainer: {
+    width: 120,
+    height: 120,
+    backgroundColor: "#4CAF50",
+    borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 10,
+    textShadowColor: "rgba(0, 0, 0, 0.5)",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 3,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: "white",
+    marginBottom: 40,
+    textShadowColor: "rgba(205, 205, 205, 0.9)",
+    textAlign: "center",
+  },
+  card: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    width: width-40,
+    marginBottom: 20,
+    shadowColor: "black",
+    alignItems: "center",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color:"#333",
+    marginBottom: 10,
+    
+  },
+  instructionText: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 20,
+    textAlign: "center",
+      
+  },
+  button: {
+    backgroundColor: "#4CAF50",
+    borderRadius: 10,
+    paddingVertical: 15,
+    paddingHorizontal:30,
+    width:'100%',
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  buttonDisabled: {
+    opacity: 0.5,
+
+  },
+  buttonIcon: {
+    marginRight: 8,
+    color: "white", 
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  errorContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+    padding: 10,
+    backgroundColor: "#ffebee",
+    borderRadius: 8,
+  },
+  errorText: {
+    color: "#f44336",
+    fontSize: 14,
+    marginLeft: 8,
+  }
 });
