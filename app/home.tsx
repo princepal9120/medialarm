@@ -1,14 +1,22 @@
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import React from "react";
+import { LinearGradient } from "expo-linear-gradient";
 
-
-import { View, Text } from 'react-native'
-import React from 'react'
-
-const Home = () => {
+const HomeScreen = () => {
   return (
-    <View>
-      <Text>Home</Text>
-    </View>
-  )
-}
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <LinearGradient colors={["#1A8E2D", "#146922"]}>
+        <View>
+          <View>
+            <View>
+              <Text> Daily Progress</Text>
+            </View>
+            {/* <TouchableOpacity></TouchableOpacity> */}
+          </View>
+        </View>
+      </LinearGradient>
+    </ScrollView>
+  );
+};
 
-export default Home
+export default HomeScreen;
