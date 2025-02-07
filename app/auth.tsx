@@ -5,16 +5,56 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import * as LocalAuthentication from "expo-local-authentication";
+import { useRoute } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
 const AuthScreen = () => {
   const [hasBiometrics, setHasBiometrics] = React.useState(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState< string| null>(null);
+  const router =useRouter()
+  const checkBiometrics = async () => {
+    const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+    setHasBiometrics(hasHardware && isEnrolled);
+  };
+  const authenticate = async () => {
+    try {
+      setIsAuthenticated(true);
+      setError(null);
+      const hasHardware = await LocalAuthentication.hasHardwareAsync();
+      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+      const supportedTypes =
+        await LocalAuthentication.supportedAuthenticationTypesAsync();
+      const auth = await LocalAuthentication.authenticateAsync({
+        promptMessage:
+          hasHardware && isEnrolled
+            ? "use faceId/touchId"
+            : "Enter your pin to access to medications",
+        fallbackLabel: "Use pin",
+        cancelLabel: "Cancel",
+        disableDeviceFallback: false,
+
+      });
+      if(auth.success){
+        router.replace("/home")
+      }else{
+        setError("Authentication failed: Plese try again.")
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    checkBiometrics();
+  }, []);
   return (
     <LinearGradient
       colors={["#4CAF50", "#2E7D32"]}
@@ -33,18 +73,18 @@ const AuthScreen = () => {
               ? "use faceId/touchId Or PIN to access your medications"
               : "Enter your pin to access to medications"}
           </Text>
-          <TouchableOpacity style={[styles.button, isAuthenticated && styles.buttonDisabled]}
-           //onPress={authenticate}
-           disabled={isAuthenticated}
+          <TouchableOpacity
+            style={[styles.button, isAuthenticated && styles.buttonDisabled]}
+            onPress={authenticate}
+            disabled={isAuthenticated}
           >
             <Ionicons
-              name={hasBiometrics ? "finger-print-outline" : "key-outline"}
+              name={hasBiometrics ? "finger-print-outline" : "keypad-outline"}
               size={40}
               color={"white"}
               style={styles.buttonIcon}
-              
             />
-            <Text style={styles.buttonText} >
+            <Text style={styles.buttonText}>
               {" "}
               {isAuthenticated
                 ? "Vefify..."
@@ -54,7 +94,7 @@ const AuthScreen = () => {
             </Text>
           </TouchableOpacity>
           {error && (
-            <View style={styles.errorContainer} >
+            <View style={styles.errorContainer}>
               <Ionicons
                 name="alert-circle"
                 size={20}
@@ -115,7 +155,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
-    width: width-40,
+    width: width - 40,
     marginBottom: 20,
     shadowColor: "black",
     alignItems: "center",
@@ -130,34 +170,31 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 24,
     fontWeight: "bold",
-    color:"#333",
+    color: "#333",
     marginBottom: 10,
-    
   },
   instructionText: {
     fontSize: 16,
     color: "#666",
     marginBottom: 20,
     textAlign: "center",
-      
   },
   button: {
     backgroundColor: "#4CAF50",
     borderRadius: 10,
     paddingVertical: 15,
-    paddingHorizontal:30,
-    width:'100%',
+    paddingHorizontal: 30,
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
   },
   buttonDisabled: {
     opacity: 0.5,
-
   },
   buttonIcon: {
     marginRight: 8,
-    color: "white", 
+    color: "white",
   },
   buttonText: {
     color: "white",
@@ -176,5 +213,5 @@ const styles = StyleSheet.create({
     color: "#f44336",
     fontSize: 14,
     marginLeft: 8,
-  }
+  },
 });
