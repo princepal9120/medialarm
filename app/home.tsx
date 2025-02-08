@@ -8,7 +8,7 @@ import {
   Dimensions,
   Modal,
 } from "react-native";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
@@ -112,9 +112,10 @@ function CircularProgress({
 }
 
 const HomeScreen = () => {
+  const [showNotifications, setShowNotifications] = useState(true);
   const router = useRouter();
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    // <SafeAreaView style={styles.safeContainer}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <LinearGradient colors={["#1A8E2D", "#146922"]} style={styles.header}>
           <View style={styles.headerContent}>
@@ -179,19 +180,28 @@ const HomeScreen = () => {
           {true ? (
             <View style={styles.emptyState}>
               <Ionicons name="medical-outline" size={48} color={"#ccc"} />
-              <Text style={styles.emptyStateText}>No medication Scheduled Today</Text>
+              <Text style={styles.emptyStateText}>
+                No medication Scheduled Today
+              </Text>
               <Link href={"/medications/add"}>
                 <TouchableOpacity style={styles.addMedicationButton}>
-                  <Text style={styles.addMedicationButtonText}>Add Mediation</Text>
+                  <Text style={styles.addMedicationButtonText}>
+                    Add Mediation
+                  </Text>
                 </TouchableOpacity>
               </Link>
             </View>
           ) : (
             [].map((medication) => (
               <View style={styles.doseCard}>
-                <View style={[styles.doseBadge,{
-                    // backgroundColor: medication.color
-                }]}>
+                <View
+                  style={[
+                    styles.doseBadge,
+                    {
+                      // backgroundColor: medication.color
+                    },
+                  ]}
+                >
                   <Ionicons
                     name="medical-outline"
                     size={24}
@@ -210,34 +220,67 @@ const HomeScreen = () => {
                   </View>
                 </View>
                 {true ? (
-                  <View style={styles.takeDoseButton}>
+                  <View style={styles.takenBadge}>
                     <Ionicons name="checkmark-circle-outline" size={24} />
-                    <Text style={styles.takeDoseButtonText}>taken</Text>
+                    <Text style={styles.takenText}>taken</Text>
                   </View>
                 ) : (
-                  <TouchableOpacity style={style.takeDoseButton}>
-                    <Text style={styles.takeDoseButtonText}>take</Text>
+                  <TouchableOpacity
+                    style={[
+                      styles.takeDoseButton,
+                      {
+                        backgroundColor: "#d32e9c",
+                      },
+                    ]}
+                  >
+                    <Text style={styles.takeDoseText}>take</Text>
                   </TouchableOpacity>
                 )}
               </View>
             ))
           )}
         </View>
-
-         
-
+        <Modal
+          visible={showNotifications}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setShowNotifications(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Notifications</Text>
+                <TouchableOpacity
+                  onPress={() => setShowNotifications(false)}
+                  style={styles.closeButton}
+                >
+                  <Ionicons name="close" size={24} color="#333" />
+                </TouchableOpacity>
+              </View>
+              {[].map((medication) => (
+                <View style={styles.notificationItem}>
+                  <View style={styles.notificationIcon}>
+                    <Ionicons name="medical" size={24} color="#ccc" />
+                  </View>
+                  <View style={styles.notificationContent}>
+                    <Text style={styles.notificationTitle}>name</Text>
+                    <Text style={styles.notificationMessage}>dosage</Text>
+                    <Text style={styles.notificationTime}>time</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
-    </SafeAreaView>
+    // </SafeAreaView>
   );
 };
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  safeContainer: {
-    flex: 1,
-    backgroundColor: "#1A8E2D",
-  },
+ 
   container: {
     flex: 1,
     backgroundColor: "white",
@@ -482,5 +525,81 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "600",
     fontSize: 14,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: "80%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  closeButton: {
+    padding: 5,
+  },
+  notificationItem: {
+    flexDirection: "row",
+    padding: 15,
+    borderRadius: 12,
+    backgroundColor: "#f5f5f5",
+    marginBottom: 10,
+  },
+  notificationIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#E8F5E9",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15,
+  },
+  notificationContent: {
+    flex: 1,
+  },
+  notificationTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 4,
+  },
+  notificationMessage: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 4,
+  },
+  notificationTime: {
+    fontSize: 12,
+    color: "#999",
+  },
+
+  takenBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#E8F5E9",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginLeft: 10,
+  },
+  takenText: {
+    color: "#4CAF50",
+    fontWeight: "600",
+    fontSize: 14,
+    marginLeft: 4,
   },
 });
