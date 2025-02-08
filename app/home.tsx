@@ -203,7 +203,7 @@ const HomeScreen = () => {
                   ]}
                 >
                   <Ionicons
-                    name="medical-outline"
+                    name="medical-sharp"
                     size={24}
                     color={"#ccd6f6"}
                   />
@@ -260,7 +260,7 @@ const HomeScreen = () => {
               {[].map((medication) => (
                 <View style={styles.notificationItem}>
                   <View style={styles.notificationIcon}>
-                    <Ionicons name="medical" size={24} color="#ccc" />
+                    <Ionicons name="medical-sharp" size={24} color="#ccc" />
                   </View>
                   <View style={styles.notificationContent}>
                     <Text style={styles.notificationTitle}>name</Text>
