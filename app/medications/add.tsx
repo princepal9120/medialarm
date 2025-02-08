@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   Platform,
   ScrollView,
   StyleSheet,
@@ -14,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+const width = Dimensions.get("window").width;
 const FREQUENCIES = [
   {
     id: "1",
@@ -41,6 +43,7 @@ const FREQUENCIES = [
   },
   { id: "5", label: "As needed", icon: "calendar-outline" as const, times: [] },
 ];
+
 const DURATIONS = [
   { id: "1", label: "7 days", value: 7 },
   { id: "2", label: "14 days", value: 14 },
@@ -67,14 +70,13 @@ const AddMedicationScreen = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const renderFrequencyOptions = () => {
     return (
-      <View>
+      <View style={styles.optionsGrid}>
         {FREQUENCIES.map((freq) => (
-          <TouchableOpacity key={freq.id}>
-            <View>
+          <TouchableOpacity key={freq.id} style={[styles.optionsCard]}>
+            <View style={[styles.optionIcon]}>
               <Ionicons name={freq.icon} size={24} color={"black"} />
-              <Text> {freq.label} </Text>
-              <Text> {freq.times}</Text>
-            </View>
+            </View>{" "}
+            <Text style={styles.optionLabel}> {freq.label} </Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -82,12 +84,15 @@ const AddMedicationScreen = () => {
   };
   const renderDurationOptions = () => {
     return (
-      <View>
+      <View style={styles.optionsGrid}>
         {DURATIONS.map((duration) => (
-          <TouchableOpacity key={duration.id}>
-            <View>
-              <Text> {duration.value > 0 ? duration.value : "∞"}</Text>
-              <Text>{duration.label}</Text>
+          <TouchableOpacity key={duration.id} style={[styles.optionsCard]}>
+            <View style={styles.optionIcon}>
+              <Text style={[styles.durationNumber]}>
+                {" "}
+                {duration.value > 0 ? duration.value : "∞"}
+              </Text>
+              <Text style={[styles.optionLabel]}>{duration.label}</Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -118,19 +123,23 @@ const AddMedicationScreen = () => {
           <View style={styles.section}>
             <View style={styles.inputContainer}>
               <TextInput
-              style={[styles.inputContainer && errors.name && styles.inputError]}
+                style={[
+                  styles.inputContainer && errors.name && styles.inputError,
+                ]}
                 placeholder="add your medicine here..."
                 placeholderTextColor={"#999"}
               />
             </View>
             <View>
               <TextInput
+                style={[styles.mainInput, errors.name && styles.inputError]}
                 placeholder="Dosage (e.g. 500mg)"
                 placeholderTextColor={"#999"}
               />
             </View>
             <View>
               <TextInput
+                style={[styles.mainInput, errors.name && styles.inputError]}
                 placeholder="Dosage (e.g. 500mg)"
                 placeholderTextColor={"#999"}
               />
@@ -167,46 +176,54 @@ const AddMedicationScreen = () => {
             </View>
           </View>
           {/* Reminder  */}
-          <View>
-            <View>
-              <View>
-                <View>
-                  <Ionicons name="notifications" size={23} color={"#1a8e2d"} />
+          <View style={styles.section}>
+            <View style={styles.card}>
+              <View style={styles.switchRow}>
+                <View style={styles.switchLabelContainer}>
+                  <View style={styles.iconContainer}>
+                    <Ionicons name="notifications" size={20} color="#1a8e2d" />
+                  </View>
+                  <View>
+                    <Text style={styles.switchLabel}>Reminders</Text>
+                    <Text style={styles.switchSubLabel}>
+                      Get notified when it's time to take your medication
+                    </Text>
+                  </View>
                 </View>
-                <View>
-                  <Text>Reminders</Text>
-                  <Text>Get notified when its time to take your medicine</Text>
-                </View>
+                <Switch
+                  trackColor={{ false: "#ddd", true: "#1a8e2d" }}
+                  thumbColor="white"
+                />
               </View>
-              <Switch
-                trackColor={{ false: "#ddd", true: "#1a8e3d" }}
-                thumbColor={"white"}
-              />
             </View>
           </View>
           {/* Refill Tracking */}
           {/* notes  */}
-          <View>
-            <View>
+          <View style={styles.section}>
+            <View style={[styles.textAreaContainer]}>
               <TextInput
+                style={[styles.textArea]}
                 placeholder="add notes or special instruction..."
                 placeholderTextColor={"#999"}
               />
             </View>
           </View>
         </ScrollView>
-        <View>
-          <TouchableOpacity>
+        <View style={styles.footer}>
+          <TouchableOpacity
+          style={[styles.saveButton]}
+          >
             <LinearGradient
               colors={["#1a8e2d", "#146922"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
+              style={styles.saveButtonGradient}
             >
-              <Text>{isSubmitting ? "Adding..." : "Add Medication"}</Text>
+              <Text style={styles.saveButtonText}>{isSubmitting ? "Adding..." : "Add Medication"}</Text>
             </LinearGradient>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>Cancal</Text>
+          <TouchableOpacity style={styles.cancelButton}>
+            <Text style={styles.cancelButtonText}>Cancal</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -223,7 +240,7 @@ const styles = StyleSheet.create({
   },
   headerGradient: {
     position: "absolute",
-   
+
     top: 0,
     left: 0,
     right: 0,
@@ -262,9 +279,9 @@ const styles = StyleSheet.create({
     color: "white",
     marginLeft: 15,
   },
-  formContainer: { flex: 1 },
-  formContentContainer: { padding: 20,},
-  section: { marginBottom: 25,},
+  formContainer: {},
+  formContentContainer: { padding: 20 },
+  section: { marginBottom: 25 },
   sectionTitle: {
     fontSize: 19,
     fontWeight: "700",
@@ -273,15 +290,229 @@ const styles = StyleSheet.create({
     opacity: 0.9,
     marginTop: 10,
   },
-  inputContainer: {},
- 
+  inputContainer: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#1a8e2d",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 9,
+    elevation: 5,
+  },
+
   mainInput: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
     padding: 15,
   },
-  optionsGrid: {},
-  dateButton: {},
-  dateIconContainer: {},
+  optionsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginHorizontal: -5,
+  },
+  optionsCard: {
+    width: (width - 72) / 2,
+    backgroundColor: "white",
+    borderRadius: 16,
+    margin: 5,
+    padding: 15,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#1a8e2d",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 9,
+    elevation: 5,
+  },
+  selectedOptionCard: { backgroundColor: "#1a8e2d", borderColor: "#1a8e2d" },
+  optionIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#1f5f5f5",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  optionLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+  },
+  durationNumber: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#1a8e2d",
+    marginBottom: 5,
+  },
+  dateContainer: {},
+  dateButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    borderRadius: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  dateIconContainer: {
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    marginRight: 5,
+  },
+  dateButtonText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "200",
+    color: "#333",
+  },
+  timesContainer: {},
+  timesTitle: {},
+  timeButton: {},
+  timeIconContainer: {},
+  timeButtonText: {},
+  card: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  switchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  switchLabelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    padding: 10,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  switchLabel: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1a1a1a",
+    opacity: 0.9,
+  },
+  switchSubLabel: {
+    fontSize: 12,
+    fontWeight: "400",
+    color: "#1a1a1a",
+    opacity: 0.9,
+  },
+  inputRow: {
+    flexDirection: "row",
+    marginTop: 15,
+    gap: 10,
+  },
+  flex1: { flex: 1 },
+  input: { padding: 15, fontSize: 16, color: "#333" },
+  textAreaContainer: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  textArea: {
+    height: 100,
+    padding: 15,
+    fontSize: 16,
+    color: "#333",
+  },
+  footer: {
+    padding: 20,
+    backgroundColor: "white",
+    borderTopWidth: 1,
+    borderTopColor: "#e0e0e0",
+  },
+  saveButton: {
+    borderRadius: 16,
+    overflow: "hidden",
+    marginBottom: 12,
+  },
+  saveButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "700",
+
+  },
+  saveButtonGradient:{
+    paddingVertical: 15,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  cancelButton: {
+    paddingVertical: 15,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "e0e0e0",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+
+  },
+  cancelButtonText: {
+    color: "#667",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  inputError: {},
+  errorText: { color: "#f44336", fontSize: 13, marginTop: 5, marginLeft: 10 },
 });
