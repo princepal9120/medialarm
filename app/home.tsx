@@ -171,7 +171,7 @@ const HomeScreen = () => {
         <View style={{ paddingHorizontal: 20 }}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Today's Schedule</Text>
-            <Link rel="stylesheet" href="/calander">
+            <Link rel="stylesheet" href="/calendar">
               <TouchableOpacity>
                 <Text style={styles.seeAllButton}>See All</Text>
               </TouchableOpacity>

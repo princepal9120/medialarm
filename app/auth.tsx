@@ -9,7 +9,6 @@ import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import * as LocalAuthentication from "expo-local-authentication";
-import { useRoute } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 
 const { width } = Dimensions.get("window");

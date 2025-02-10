@@ -123,21 +123,12 @@ const AddMedicationScreen = () => {
           <View style={styles.section}>
             <View style={styles.inputContainer}>
               <TextInput
-                style={[
-                  styles.inputContainer && errors.name && styles.inputError,
-                ]}
+                style={[styles.mainInput, errors.name && styles.inputError]}
                 placeholder="add your medicine here..."
                 placeholderTextColor={"#999"}
               />
             </View>
-            <View>
-              <TextInput
-                style={[styles.mainInput, errors.name && styles.inputError]}
-                placeholder="Dosage (e.g. 500mg)"
-                placeholderTextColor={"#999"}
-              />
-            </View>
-            <View>
+            <View style={styles.inputContainer}>
               <TextInput
                 style={[styles.mainInput, errors.name && styles.inputError]}
                 placeholder="Dosage (e.g. 500mg)"
@@ -210,16 +201,16 @@ const AddMedicationScreen = () => {
           </View>
         </ScrollView>
         <View style={styles.footer}>
-          <TouchableOpacity
-          style={[styles.saveButton]}
-          >
+          <TouchableOpacity style={[styles.saveButton]}>
             <LinearGradient
               colors={["#1a8e2d", "#146922"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.saveButtonGradient}
             >
-              <Text style={styles.saveButtonText}>{isSubmitting ? "Adding..." : "Add Medication"}</Text>
+              <Text style={styles.saveButtonText}>
+                {isSubmitting ? "Adding..." : "Add Medication"}
+              </Text>
             </LinearGradient>
           </TouchableOpacity>
           <TouchableOpacity style={styles.cancelButton}>
@@ -253,7 +244,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
+    gap: 20,
     paddingBottom: 20,
     zIndex: 1,
   },
@@ -295,7 +286,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: "#1a8e2d",
+    borderColor: "#e0e0e0",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -303,11 +294,11 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.15,
     shadowRadius: 9,
-    elevation: 5,
+    elevation: 2,
   },
 
   mainInput: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#333",
     padding: 15,
@@ -331,9 +322,9 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.05,
     shadowRadius: 9,
-    elevation: 5,
+    elevation: 2,
   },
   selectedOptionCard: { backgroundColor: "#1a8e2d", borderColor: "#1a8e2d" },
   optionIcon: {
@@ -346,8 +337,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionLabel: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 14,
+    fontWeight: "600",
     color: "#333",
     textAlign: "center",
   },
@@ -491,12 +482,11 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "700",
-
   },
-  saveButtonGradient:{
+  saveButtonGradient: {
     paddingVertical: 15,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   cancelButton: {
     paddingVertical: 15,
@@ -506,7 +496,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
-
   },
   cancelButtonText: {
     color: "#667",
