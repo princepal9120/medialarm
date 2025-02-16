@@ -106,7 +106,7 @@ const AddMedicationScreen = () => {
             </View>{" "}
             <Text
               style={
-                (styles.optionLabel, 
+                (styles.optionLabel,
                 selectedFrequency === freq.label && styles.selectedOptionLabel)
               }
             >
@@ -135,7 +135,12 @@ const AddMedicationScreen = () => {
             }}
           >
             <View style={styles.optionIcon}>
-              <Text style={[styles.durationNumber,durationFrequencey=== duration.label && styles.optionLabel]}>
+              <Text
+                style={[
+                  styles.durationNumber,
+                  durationFrequencey === duration.label && styles.optionLabel,
+                ]}
+              >
                 {" "}
                 {duration.value > 0 ? duration.value : "∞"}
               </Text>
@@ -198,14 +203,30 @@ const AddMedicationScreen = () => {
         "#146922",
         "#4CAF50",
         "#8BC34A",
+        "#C0CA33", // Greens
         "#CDDC39",
         "#FFEB3B",
         "#FFC107",
         "#FF9800",
-        "#FF5722",
+        "#FF5722", // Yellows & Oranges
         "#F44336",
+        "#E91E63",
+        "#9C27B0",
+        "#673AB7",
+        "#3F51B5", // Reds & Purples
+        "#2196F3",
+        "#03A9F4",
+        "#00BCD4",
+        "#009688",
+        "#4E342E", // Blues & Teals
+        "#607D8B",
+        "#795548",
+        "#9E9E9E",
+        "#000000",
+        "#FFFFFF", // Grays, Browns & Black/White
       ];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+      const randomColor = colors[Math.floor(Math.random() * colors.length * 2)];
       const medicatonData = {
         id: Math.random().toString(36).substring(2, 9),
         ...form,
@@ -237,12 +258,14 @@ const AddMedicationScreen = () => {
       );
     } catch (error) {
       console.error("save error:", error);
-      Alert.alert("Error", "Failed to add medication.Please try again.",[{text: "ok"}],
-        {cancelable: false}
+      Alert.alert(
+        "Error",
+        "Failed to add medication.Please try again.",
+        [{ text: "ok" }],
+        { cancelable: false }
       );
-    } finally{
+    } finally {
       setIsSubmitting(false);
-      
     }
   };
   return (
@@ -301,109 +324,97 @@ const AddMedicationScreen = () => {
                 <Text style={styles.errorText}>{errors.dosage}</Text>
               )}
             </View>
+          </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>How often?</Text>
+            {errors.frequency && (
+              <Text style={styles.errorText}>{errors.frequency}</Text>
+            )}
+            {renderFrequencyOptions()}
 
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>How often?</Text>
-              {errors.frequency && (
-                <Text style={styles.errorText}>{errors.frequency}</Text>
-              )}
-              {renderFrequencyOptions()}
+            <Text style={styles.sectionTitle}>For How long?</Text>
+            {errors.duration && (
+              <Text style={styles.errorText}>{errors.duration}</Text>
+            )}
+            {/* render duration options */}
+            {renderDurationOptions()}
 
-              <Text style={styles.sectionTitle}>For How long?</Text>
-              {errors.duration && (
-                <Text style={styles.errorText}>{errors.duration}</Text>
-              )}
-              {/* render duration options */}
-              {renderDurationOptions()}
+            <TouchableOpacity
+              style={styles.dateButton}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <View style={styles.dateIconContainer}>
+                <Ionicons name="calendar-number" size={20} color={"#1a8e2d"} />
+              </View>
+              <Text style={styles.dateButtonText}>
+                {" "}
+                Starts {form.startDate.toLocaleDateString()}
+              </Text>
+              <Ionicons name="chevron-forward" size={20} color={"#666"} />
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                value={form.startDate}
+                mode="date"
+                onChange={(event, date) => {
+                  setShowDatePicker(false);
+                  // setShowTimePicker(true);
+                  if (date) {
+                    setForm({ ...form, startDate: date });
+                  }
+                }}
+              />
+            )}
 
-              <TouchableOpacity
-                style={styles.dateButton}
-                onPress={() => setShowDatePicker(true)}
-              >
-                <View style={styles.dateIconContainer}>
-                  <Ionicons
-                    name="calendar-number"
-                    size={20}
-                    color={"#1a8e2d"}
-                  />
-                </View>
-                <Text style={styles.dateButtonText}>
-                  {" "}
-                  Starts {form.startDate.toLocaleDateString()}
-                </Text>
-                <Ionicons name="chevron-forward" size={20} color={"#666"} />
-              </TouchableOpacity>
-              {showDatePicker && (
-                <DateTimePicker
-                  value={form.startDate}
-                  mode="date"
-                  onChange={(event, date) => {
-                    setShowDatePicker(false);
-                    // setShowTimePicker(true);
-                    if (date) {
-                      setForm({ ...form, startDate: date });
-                    }
-                  }}
-                />
-              )}
+            {form.frequency && form.frequency !== "As needed" && (
+              <View style={styles.timesContainer}>
+                <Text style={styles.timesTitle}>Meditation Times</Text>
 
-              {form.frequency && form.frequency !== "As needed" && (
-                <View style={styles.timesContainer}>
-                  <Text style={styles.timesTitle}>Meditation Times</Text>
-
-                  {form.times.map((time, idx) => (
-                    <TouchableOpacity
-                      key={idx}
-                      style={styles.timeButton}
-                      onPress={() => setShowTimePicker(true)}
-                    >
-                      <View style={styles.timeIconContainer}>
-                        <Ionicons
-                          name="time-outline"
-                          size={20}
-                          color={"#1a8e2d"}
-                        />
-                      </View>
-                      <Text style={styles.timeButtonText}> {time}</Text>
+                {form.times.map((time, idx) => (
+                  <TouchableOpacity
+                    key={idx}
+                    style={styles.timeButton}
+                    onPress={() => setShowTimePicker(true)}
+                  >
+                    <View style={styles.timeIconContainer}>
                       <Ionicons
-                        name="chevron-forward"
+                        name="time-outline"
                         size={20}
-                        color={"#666"}
+                        color={"#1a8e2d"}
                       />
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
+                    </View>
+                    <Text style={styles.timeButtonText}> {time}</Text>
+                    <Ionicons name="chevron-forward" size={20} color={"#666"} />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
 
-              {showTimePicker && (
-                <DateTimePicker
-                  mode="time"
-                  value={(() => {
-                    const [hours, minutes] = form.times[0]
-                      .split(":")
-                      .map(Number);
-                    const date = new Date();
-                    date.setHours(hours, minutes, 0, 0);
-                    return date;
-                  })()}
-                  onChange={(event, date) => {
-                    setShowTimePicker(false);
-                    if (date) {
-                      const newTime = date.toLocaleDateString("default", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: false,
-                      });
-                      setForm((prev) => ({
-                        ...prev,
-                        times: prev.times.map((t, i) => (i === 0 ? newTime : t)),
-                      }));
-                    }
-                  }}
-                />
-              )}
-           
+            {showTimePicker && (
+              <DateTimePicker
+                mode="time"
+                value={(() => {
+                  const [hours, minutes] = form.times[0].split(":").map(Number);
+                  const date = new Date();
+                  date.setHours(hours, minutes, 0, 0);
+                  return date;
+                })()}
+                onChange={(event, date) => {
+                  setShowTimePicker(false);
+                  if (date) {
+                    const newTime = date.toLocaleDateString("default", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    });
+                    setForm((prev) => ({
+                      ...prev,
+                      times: prev.times.map((t, i) => (i === 0 ? newTime : t)),
+                    }));
+                  }
+                }}
+              />
+            )}
           </View>
           {/* Reminder  */}
           <View style={styles.section}>
@@ -424,8 +435,7 @@ const AddMedicationScreen = () => {
                   value={form.reminderEnabled}
                   onValueChange={(value) => {
                     setForm({ ...form, reminderEnabled: value });
-                  }
-                  }
+                  }}
                   trackColor={{ false: "#ddd", true: "#1a8e2d" }}
                   thumbColor="white"
                   style={styles.switchIcon}
@@ -452,7 +462,7 @@ const AddMedicationScreen = () => {
         </ScrollView>
         <View style={styles.footer}>
           <TouchableOpacity
-            onPress={()=> handleSave()}
+            onPress={() => handleSave()}
             style={[
               styles.saveButton,
               isSubmitting && styles.saveButtonDisabled,
