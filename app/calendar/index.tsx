@@ -12,11 +12,11 @@ import { Ionicons } from "@expo/vector-icons";
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const CalendarScreen = () => {
   return (
-    <View>
+    <View style={{ flex: 1 ,backgroundColor: '#f8f9fa'}}>
       <LinearGradient
         colors={["#1A8E2D", "#146922"]}
         style={styles.headerGradient}
-      >
+      />
         <View style={styles.content}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton}>
@@ -25,11 +25,9 @@ const CalendarScreen = () => {
             <Text style={styles.headerTitle}>Calendar</Text>
           </View>
 
-          <View>
-            <Text>hello</Text>
-          </View>
+          
         </View>
-      </LinearGradient>
+      
     </View>
   );
 };

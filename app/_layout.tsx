@@ -29,12 +29,16 @@ export default function Layout() {
             }}
           />
           <Stack.Screen
-          name="medications/add"
-          options={{
-            headerShown: false,
-            headerBackTitle:"",
-            title: "",
-          }}
+            name="medications/add"
+            options={{
+              headerShown: false,
+              headerBackTitle: "",
+              title: "",
+            }}
+          />
+          <Stack.Screen
+            name="calendar/index"
+            options={{ headerShown: false, headerBackTitle: "", title: "" }}
           />
         </Stack>
       </SafeAreaView>
