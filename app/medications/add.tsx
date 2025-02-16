@@ -55,7 +55,7 @@ const DURATIONS = [
 ];
 
 const AddMedicationScreen = () => {
-  const router=useRouter();
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     dosage: "",
@@ -137,70 +137,104 @@ const AddMedicationScreen = () => {
     );
   };
 
-  const validateForm =() =>{
-    const newErrors: { [key:string]: string} ={};
-    if(!form.name.trim()){
-      newErrors.name="Medication Name is required";
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!form.name.trim()) {
+      newErrors.name = "Medication Name is required";
     }
-    if(!form.dosage.trim()){
-      newErrors.dosage="Dosage is required";
+    if (!form.dosage.trim()) {
+      newErrors.dosage = "Dosage is required";
     }
-    if(!form.frequency){
-      newErrors.frequency="Frequency is required";
+    if (!form.frequency) {
+      newErrors.frequency = "Frequency is required";
     }
-    if(!form.duration){
-      newErrors.duration="Duration is required";
+    if (!form.duration) {
+      newErrors.duration = "Duration is required";
     }
-    if(!form.startDate){
-      newErrors.startDate="Start date is required";
+    if (!form.startDate) {
+      newErrors.startDate = "Start date is required";
     }
-    if(!form.times.length){
-      newErrors.times="Times is required";
+    if (!form.times.length) {
+      newErrors.times = "Times is required";
     }
-    if(form.refillReminder){
-      if(!form.currentSupply){
-        newErrors.currentSupply="Current supply is required for refill tracking";
+    if (form.refillReminder) {
+      if (!form.currentSupply) {
+        newErrors.currentSupply =
+          "Current supply is required for refill tracking";
       }
-      if(!form.refillAt){
-        newErrors.refillAt="Refill at is required";
+      if (!form.refillAt) {
+        newErrors.refillAt = "Refill at is required";
       }
-      if(Number(form.refillAt)>=Number(form.currentSupply)){
-        newErrors.refillAt="Refill at should be less than current supply";
-        
+      if (Number(form.refillAt) >= Number(form.currentSupply)) {
+        newErrors.refillAt = "Refill at should be less than current supply";
       }
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
 
-  }
-
-  const handleSave= async () => {
+  const handleSave = async () => {
     try {
-      if(!validateForm()){
+      if (!validateForm()) {
         Alert.alert("Please fill in all the required fields");
         return;
       }
-      if(isSubmitting) return;
+      if (isSubmitting) return;
       setIsSubmitting(true);
 
       //generte a random color
-      const colors= ["#1a8e2d", "#146922","#4CAF50","#8BC34A","#CDDC39","#FFEB3B","#FFC107","#FF9800","#FF5722","#F44336"];
+      const colors = [
+        "#1a8e2d",
+        "#146922",
+        "#4CAF50",
+        "#8BC34A",
+        "#CDDC39",
+        "#FFEB3B",
+        "#FFC107",
+        "#FF9800",
+        "#FF5722",
+        "#F44336",
+      ];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      const medicatonData= {
-        id: Math.random().toString(36).substring(2,9),
+      const medicatonData = {
+        id: Math.random().toString(36).substring(2, 9),
         ...form,
-        currentSupply: form.currentSupply? Number(form.currentSupply):0,
-        totalSupply: form.currentSupply? Number(form.currentSupply):0,
-        refillAt: form.refillAt? Number(form.refillAt):0,
+        currentSupply: form.currentSupply ? Number(form.currentSupply) : 0,
+        totalSupply: form.currentSupply ? Number(form.currentSupply) : 0,
+        refillAt: form.refillAt ? Number(form.refillAt) : 0,
         startDate: form.startDate.toISOString(),
         color: randomColor,
       };
       console.log(medicatonData);
-      
+      await addMedication(medicatonData);
+
+      if (medicatonData.reminderEnabled) {
+        await scheduleMedicationReminder(medicatonData);
+      }
+
+      Alert.alert(
+        "Success",
+        "Medication added successfully",
+        [
+          {
+            text: "Ok",
+            onPress: () => router.back(),
+          },
+        ],
+        {
+          cancelable: false,
+        }
+      );
     } catch (error) {
-      console.log(error);
+      console.error("save error:", error);
+      Alert.alert("Error", "Failed to add medication.Please try again.",[{text: "ok"}],
+        {cancelable: false}
+      );
+    } finally{
+      setIsSubmitting(false);
+      
     }
-  }
+  };
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -402,7 +436,12 @@ const AddMedicationScreen = () => {
           </View>
         </ScrollView>
         <View style={styles.footer}>
-          <TouchableOpacity style={[styles.saveButton ,isSubmitting && styles.saveButtonDisabled]}>
+          <TouchableOpacity
+            style={[
+              styles.saveButton,
+              isSubmitting && styles.saveButtonDisabled,
+            ]}
+          >
             <LinearGradient
               colors={["#1a8e2d", "#146922"]}
               start={{ x: 0, y: 0 }}
@@ -414,9 +453,11 @@ const AddMedicationScreen = () => {
               </Text>
             </LinearGradient>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.cancelButton}
-          onPress={() => router.back()}
-          disabled={isSubmitting}>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => router.back()}
+            disabled={isSubmitting}
+          >
             <Text style={styles.cancelButtonText}>Cancal</Text>
           </TouchableOpacity>
         </View>
@@ -630,7 +671,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 16,
 
-    
     padding: 20,
     borderWidth: 1,
     borderColor: "#e0e0e0",
@@ -755,6 +795,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   switchIcon: {
- marginTop: -25,
-  }
+    marginTop: -25,
+  },
 });
