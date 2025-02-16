@@ -11,7 +11,7 @@ export interface Medication {
   frequency: string;
   duration: string;
   color: string;
-  startDate: Date;
+  startDate: string;
   times: string[];
   notes: string;
   reminderEnabled: boolean;
@@ -38,7 +38,7 @@ export async function getMedications(): Promise<Medication[]> {
     return [];
   }
 }
-export async function addMedicaton(medicaton: Medication): Promise<void> {
+export async function addMedication(medicaton: Medication): Promise<void> {
   try {
     const medications = await getMedications();
     medications.push(medicaton);

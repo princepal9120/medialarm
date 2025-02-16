@@ -16,6 +16,8 @@ import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { addMedication } from "@/utils/storage";
+import { scheduleMedicationReminder } from "@/utils/notifications";
 
 const width = Dimensions.get("window").width;
 const FREQUENCIES = [
@@ -85,6 +87,10 @@ const AddMedicationScreen = () => {
               styles.optionsCard,
               selectedFrequency === freq.label && styles.selectedOptionCard,
             ]}
+            onPress={() => {
+              setSelectedFrequency(freq.label);
+              setForm({ ...form, frequency: freq.label });
+            }}
           >
             <View
               style={[
@@ -100,7 +106,7 @@ const AddMedicationScreen = () => {
             </View>{" "}
             <Text
               style={
-                (styles.optionLabel,
+                (styles.optionLabel, 
                 selectedFrequency === freq.label && styles.selectedOptionLabel)
               }
             >
@@ -123,9 +129,13 @@ const AddMedicationScreen = () => {
               durationFrequencey === duration.label &&
                 styles.selectedOptionCard,
             ]}
+            onPress={() => {
+              setDuratoinFrequency(duration.label);
+              setForm({ ...form, duration: duration.label });
+            }}
           >
             <View style={styles.optionIcon}>
-              <Text style={[styles.durationNumber]}>
+              <Text style={[styles.durationNumber,durationFrequencey=== duration.label && styles.optionLabel]}>
                 {" "}
                 {duration.value > 0 ? duration.value : "∞"}
               </Text>
@@ -280,7 +290,7 @@ const AddMedicationScreen = () => {
                 placeholder="Dosage (e.g. 500mg)"
                 placeholderTextColor={"#999"}
                 value={form.dosage}
-                onChange={(text) => {
+                onChangeText={(text) => {
                   setForm({ ...form, dosage: text });
                   if (errors.dosage) {
                     setErrors({ ...errors, dosage: "" });
@@ -290,6 +300,8 @@ const AddMedicationScreen = () => {
               {errors.dosage && (
                 <Text style={styles.errorText}>{errors.dosage}</Text>
               )}
+            </View>
+
             </View>
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>How often?</Text>
@@ -385,15 +397,13 @@ const AddMedicationScreen = () => {
                       });
                       setForm((prev) => ({
                         ...prev,
-                        times: prev.times.map((time, i) =>
-                          i === 0 ? newTime : time
-                        ),
+                        times: prev.times.map((t, i) => (i === 0 ? newTime : t)),
                       }));
                     }
                   }}
                 />
               )}
-            </View>
+           
           </View>
           {/* Reminder  */}
           <View style={styles.section}>
@@ -411,6 +421,11 @@ const AddMedicationScreen = () => {
                   </View>
                 </View>
                 <Switch
+                  value={form.reminderEnabled}
+                  onValueChange={(value) => {
+                    setForm({ ...form, reminderEnabled: value });
+                  }
+                  }
                   trackColor={{ false: "#ddd", true: "#1a8e2d" }}
                   thumbColor="white"
                   style={styles.switchIcon}
@@ -437,6 +452,7 @@ const AddMedicationScreen = () => {
         </ScrollView>
         <View style={styles.footer}>
           <TouchableOpacity
+            onPress={()=> handleSave()}
             style={[
               styles.saveButton,
               isSubmitting && styles.saveButtonDisabled,
