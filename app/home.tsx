@@ -15,7 +15,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
-import { Link, useFocusEffect, useRouter } from "expo-router";
+import { Link,  useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   DoseHistory,
   getMedications,
@@ -205,13 +206,7 @@ const HomeScreen = () => {
       return () => unsubscribe;
     }, [loadMedications])
   );
-  {todayMedications.length > 0 && (
-    <View style={styles.notificationBadge}>
-      <Text style={styles.notificationCount}>
-        {todayMedications.length}
-      </Text>
-    </View>
-  )}
+ 
   const handleTakeDose = async (medication: Medication) => {
     try {
       await recordDose(medication.id, true, new Date().toISOString());
@@ -303,8 +298,9 @@ const HomeScreen = () => {
             <Text style={styles.emptyStateText}>
               No medication Scheduled Today
             </Text>
-            <Link href={"/medications/add"}>
-              <TouchableOpacity style={styles.addMedicationButton}>
+            <Link href={"/medications/add"} asChild>
+              <TouchableOpacity style={styles.addMedicationButton}
+           >
                 <Text style={styles.addMedicationButtonText}>
                   Add Mediation
                 </Text>

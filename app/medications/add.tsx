@@ -546,7 +546,6 @@ const styles = StyleSheet.create({
   },
   headerGradient: {
     position: "absolute",
-
     top: 0,
     left: 0,
     right: 0,
@@ -559,7 +558,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 20,
+    paddingHorizontal: 20,
     paddingBottom: 20,
     zIndex: 1,
   },

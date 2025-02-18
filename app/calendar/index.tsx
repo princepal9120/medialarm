@@ -246,10 +246,11 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     left: 0,
-    height: Platform.OS === "ios" ? 120 : 100,
+    height: Platform.OS === "ios" ? 140 : 120,
   },
   content: {
     flex: 1,
+    paddingTop: Platform.OS === "ios" ? 50 : 30,
   },
   header: {
     flexDirection: "row",

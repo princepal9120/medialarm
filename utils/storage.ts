@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+
 
 const MEDICATION_KEY = "@medications";
 const DOSE_HISTORY_KEY = "@dose_history";
@@ -57,14 +57,26 @@ export async function updateMedication(
       (med) => med.id === updatedMedication.id
     );
     if (index !== -1) {
-      medications[index] = updateMedication;
+      medications[index] = updatedMedication;
       await AsyncStorage.setItem(MEDICATION_KEY, JSON.stringify(medications));
     }
   } catch (error) {
-    console.error("Error while updating medications",error);
+    console.error("Error updating medication:", error);
     throw error;
+  }
+}
+export async function deleteMedication(id:string): Promise< void> {
+  try {
+     const medications = await getMedications();
+     const updateMedications= medications.filter((med) => med.id !==id);
+
+     await AsyncStorage.setItem(MEDICATION_KEY, JSON.stringify(updateMedication));
+  } catch (error) {
+    console.error("Error deleting medication",error);
+    throw error
     
   }
+  
 }
 export async function getDoseHistory(): Promise<DoseHistory[]> {
   try {
