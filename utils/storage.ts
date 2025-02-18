@@ -47,6 +47,25 @@ export async function addMedication(medicaton: Medication): Promise<void> {
     throw error;
   }
 }
+
+export async function updateMedication(
+  updatedMedication: Medication
+): Promise<void> {
+  try {
+    const medications = await getMedications();
+    const index = medications.findIndex(
+      (med) => med.id === updatedMedication.id
+    );
+    if (index !== -1) {
+      medications[index] = updateMedication;
+      await AsyncStorage.setItem(MEDICATION_KEY, JSON.stringify(medications));
+    }
+  } catch (error) {
+    console.error("Error while updating medications",error);
+    throw error;
+    
+  }
+}
 export async function getDoseHistory(): Promise<DoseHistory[]> {
   try {
     const data = await AsyncStorage.getItem(DOSE_HISTORY_KEY);
@@ -86,18 +105,16 @@ export async function recordDose(
     });
     await AsyncStorage.setItem(DOSE_HISTORY_KEY, JSON.stringify(history));
   } catch (error) {
-    console.error("Error recording dose:", error); 
+    console.error("Error recording dose:", error);
     throw error;
   }
 }
 
-export async function clearAllData(): Promise<void>{
- try {
+export async function clearAllData(): Promise<void> {
+  try {
     await AsyncStorage.multiRemove([MEDICATION_KEY, DOSE_HISTORY_KEY]);
- } catch (error) {
+  } catch (error) {
     console.error("Error clearing data:", error);
     throw error;
-    
- }
-
+  }
 }
