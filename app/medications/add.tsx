@@ -278,8 +278,10 @@ const AddMedicationScreen = () => {
       />
       <View style={styles.content}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton}
-          onPress={()=> router.back()}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
             <Ionicons name="chevron-back" size={28} color={"#1a8e2d"} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>New Medication</Text>
@@ -445,6 +447,48 @@ const AddMedicationScreen = () => {
             </View>
           </View>
           {/* Refill Tracking */}
+          {form.refillReminder && (
+            <View style={styles.refillInputs}>
+              <View style={styles.inputRow}>
+                <View>
+                  <TextInput style={[styles.input , errors.currentSupply && styles.inputError]}
+                  placeholder="Current Supply"
+                  placeholderTextColor={"#999"}
+                  value={form.currentSupply} 
+                  onChangeText={(text)=>
+                  {  setForm({...form, currentSupply: text})
+                    if(errors.currentSupply){
+                      setErrors({...errors, currentSupply: ""})
+                    }}
+                   }
+                   keyboardType="numeric"/>
+                   {errors.currentSupply && 
+                   ( <Text style={styles.errorText}>{errors.currentSupply}</Text>)}
+                </View>
+                <View style={[styles.inputContainer, styles.flex1]}>
+                      <TextInput
+                        style={[
+                          styles.input,
+                          errors.refillAt && styles.inputError,
+                        ]}
+                        placeholder="Alert at"
+                        placeholderTextColor="#999"
+                        value={form.refillAt}
+                        onChangeText={(text) => {
+                          setForm({ ...form, refillAt: text });
+                          if (errors.refillAt) {
+                            setErrors({ ...errors, refillAt: "" });
+                          }
+                        }}
+                        keyboardType="numeric"
+                      />
+                      {errors.refillAt && (
+                        <Text style={styles.errorText}>{errors.refillAt}</Text>
+                      )}
+                    </View>
+              </View>
+            </View>
+          )}
           {/* notes  */}
           <View style={styles.section}>
             <View style={[styles.textAreaContainer]}>
@@ -751,6 +795,9 @@ const styles = StyleSheet.create({
     color: "#1a1a1a",
     marginTop: 2,
     opacity: 0.9,
+  },
+  refillInputs:{
+    marginTop: 15,
   },
   inputRow: {
     flexDirection: "row",
