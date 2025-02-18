@@ -24,7 +24,7 @@ export default function SplashScreen() {
     ]).start();
 
     const timer = setTimeout(() => {
-      router.replace("/home");
+      router.replace("/refills");
     }, 3000);
 
     return () => clearTimeout(timer);

@@ -125,7 +125,7 @@ function CircularProgress({
 }
 
 const HomeScreen = () => {
-  const [showNotifications, setShowNotifications] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
   const router = useRouter();
   const [todayMedications, setTodayMedications] = useState<Medication[]>([]);
   const [completeDoses, setCompleteDoses] = useState(0);
@@ -205,7 +205,13 @@ const HomeScreen = () => {
       return () => unsubscribe;
     }, [loadMedications])
   );
-
+  {todayMedications.length > 0 && (
+    <View style={styles.notificationBadge}>
+      <Text style={styles.notificationCount}>
+        {todayMedications.length}
+      </Text>
+    </View>
+  )}
   const handleTakeDose = async (medication: Medication) => {
     try {
       await recordDose(medication.id, true, new Date().toISOString());
@@ -241,11 +247,13 @@ const HomeScreen = () => {
                 size={24}
                 color={"white"}
               />
-              {
+   {todayMedications.length > 0 && (
                 <View style={styles.notificationBadge}>
-                  <Text style={styles.notificationCount}>1</Text>
+                  <Text style={styles.notificationCount}>
+                    {todayMedications.length}
+                  </Text>
                 </View>
-              }
+              )}
             </TouchableOpacity>
           </View>
           <CircularProgress

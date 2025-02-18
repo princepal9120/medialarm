@@ -2,6 +2,8 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import RefillsScreen from "./refills";
+import CalendarScreen from "./calendar";
 
 export default function Layout() {
   return (
@@ -46,6 +48,7 @@ export default function Layout() {
           />
           <Stack.Screen
             name="calendar/index"
+       
             options={{
               headerShown: false,
               headerBackTitle: "",
