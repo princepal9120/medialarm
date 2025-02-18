@@ -278,7 +278,8 @@ const AddMedicationScreen = () => {
       />
       <View style={styles.content}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton}>
+          <TouchableOpacity style={styles.backButton}
+          onPress={()=> router.back()}>
             <Ionicons name="chevron-back" size={28} color={"#1a8e2d"} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>New Medication</Text>

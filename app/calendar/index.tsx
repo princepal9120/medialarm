@@ -18,9 +18,11 @@ import {
 } from "@/utils/storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { JsxAST } from "react-native-svg";
+import { useRouter } from "expo-router";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const CalendarScreen = () => {
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [medications, setMedications] = React.useState<Medication[]>([]);
   const [doseHistory, setDoseHistory] = React.useState<DoseHistory[]>([]);
@@ -45,6 +47,7 @@ const CalendarScreen = () => {
     }, [loadData])
   );
   const getDaysInMonth = (date: Date) => {
+   
     const year = date.getFullYear();
     const month = date.getMonth();
     const days = new Date(year, month + 1, 0).getDate();
@@ -122,36 +125,35 @@ const CalendarScreen = () => {
               },
             ]}
           />
-            <View style={styles.medicationInfo}>
-              <Text style={styles.medicationName}>{medications.name}</Text>
-              <Text style={styles.medicationDosage}>{medications.dosage}</Text>
-              <Text style={styles.medicationTime}>{medications.times[0]}</Text>
-            </View>
-            {taken ? (
-              <View style={styles.takenBadge}>
-                <Ionicons name="checkmark-circle" size={20} color={"#4caf50"} />
-                <Text style={styles.takenText}>Taken</Text>
-              </View>
-            ) : (
-              <TouchableOpacity
-                style={[
-                  styles.takeDoseButton,
-                  { backgroundColor: medications.color },
-                ]}
-                onPress={async () => {
-                  await recordDose(
-                    medications.id,
-                    true,
-                    new Date().toISOString()
-                  );
-                  loadData();
-                }}
-              >
-                <Text style={styles.takeDoseButton}>Take</Text>
-              </TouchableOpacity>
-            )}
+          <View style={styles.medicationInfo}>
+            <Text style={styles.medicationName}>{medications.name}</Text>
+            <Text style={styles.medicationDosage}>{medications.dosage}</Text>
+            <Text style={styles.medicationTime}>{medications.times[0]}</Text>
           </View>
-
+          {taken ? (
+            <View style={styles.takenBadge}>
+              <Ionicons name="checkmark-circle" size={20} color={"#4caf50"} />
+              <Text style={styles.takenText}>Taken</Text>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={[
+                styles.takeDoseButton,
+                { backgroundColor: medications.color },
+              ]}
+              onPress={async () => {
+                await recordDose(
+                  medications.id,
+                  true,
+                  new Date().toISOString()
+                );
+                loadData();
+              }}
+            >
+              <Text style={styles.takeDoseButton}>Take</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       );
     });
   };
@@ -166,7 +168,10 @@ const CalendarScreen = () => {
       />
       <View style={styles.content}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton}>
+          <TouchableOpacity
+      onPress={() => router.back()}
+            style={styles.backButton}
+          >
             <Ionicons name="chevron-back" size={24} color="#1A8E2D" />
           </TouchableOpacity>{" "}
           <Text style={styles.headerTitle}>Calendar</Text>
@@ -395,19 +400,17 @@ const styles = StyleSheet.create({
   },
   takenBadge: {
     flexDirection: "row",
-    alignItems:"center",
+    alignItems: "center",
     backgroundColor: "#e8f5e9",
     paddingHorizontal: 12,
-    paddingVertical:6,
-    borderRadius:12,
-
+    paddingVertical: 6,
+    borderRadius: 12,
   },
   takenText: {
     color: "#4caf50",
     fontWeight: "600",
     fontSize: 14,
     borderRadius: 12,
-
   },
   takeDoseButton: {
     paddingVertical: 8,

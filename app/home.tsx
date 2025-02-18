@@ -234,7 +234,8 @@ const HomeScreen = () => {
             <View>
               <Text style={styles.greeting}> Daily Progress</Text>
             </View>
-            <TouchableOpacity style={styles.notificationButton}>
+            <TouchableOpacity style={styles.notificationButton}
+            onPress={()=>setShowNotifications(true)}>
               <Ionicons
                 name="notifications-outline"
                 size={24}
